@@ -1,0 +1,14 @@
+streamlit
+streamlit-cookies-manager
+pandas
+requests
+numpy
+meteostat
+pytz
+plotly
+geocoder
+folium
+streamlit-folium
+flask
+flask-cors
+gunicorn
