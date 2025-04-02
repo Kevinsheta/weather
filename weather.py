@@ -39,13 +39,13 @@ def current_weather(city, unit= 'C'):
             if unit == 'F':
                 temperature= convert_to_fahrenheit(temperature)
 
-               # Dynamically fetching the icon URL
-            if icon != 'N/A':
+           if icon != 'N/A':
                 icon_base_url = "https://raw.githubusercontent.com/Kevinsheta/weather/main/Icon/"
                 icon_url = f"{icon_base_url}{icon}.png"
-                image_html = f'<img src="{icon_url}" alt="Weather Icon" class="weather-icon1">'
-            else:
-                image_html = '<p>No Icon Available</p>'
+                st.image(icon_url, width=80)  # Directly displaying the icon using Streamlit
+           else:
+                st.write("No Icon Available")
+
 
 
             # HTML for layout
