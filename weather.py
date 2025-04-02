@@ -39,13 +39,23 @@ def current_weather(city, unit= 'C'):
             if unit == 'F':
                 temperature= convert_to_fahrenheit(temperature)
 
-           if icon != 'N/A':
-                icon_base_url = "https://raw.githubusercontent.com/Kevinsheta/weather/main/Icon/"
-                icon_url = f"{icon_base_url}{icon}.png"
-                st.image(icon_url, width=80)  # Directly displaying the icon using Streamlit
-           else:
-                st.write("No Icon Available")
+            def encode_image_to_base64(file_path):
+                try:
+                    with open(file_path, "rb") as img_file:
+                        return base64.b64encode(img_file.read()).decode("utf-8")
+                except FileNotFoundError:
+                    return None
 
+            # Generate dynamic image
+            if icon != 'N/A':
+                icon_url = f"https://raw.githubusercontent.com/Kevinsheta/weather/main/Icon/{icon}.png"
+                base64_image = encode_image_to_base64(icon_url)
+                if base64_image:
+                    image_html = f'<img src="data:image/png;base64,{base64_image}" alt="Weather Icon" class="weather-icon1">'
+                else:
+                    image_html = '<p>No Icon Available</p>'
+            else:
+                image_html = '<p>No Icon Available</p>'
 
 
             # HTML for layout
@@ -298,7 +308,7 @@ def fetch_weather_data(city, unit= 'C'):
                 temperature= convert_to_fahrenheit(temperature)
             
             # Assume icon_path is base64-encoded icon; replace with correct method for real icons
-            icon_file_path = f"E:/Python.0/Weather live graph/Icon/{icon}.png"
+            icon_file_path = f"Icon/{icon}.png"
             try:
                 with open(icon_file_path, "rb") as img_file:
                     icon_base64 = base64.b64encode(img_file.read()).decode("utf-8")
