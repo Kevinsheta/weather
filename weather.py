@@ -275,12 +275,17 @@ def fetch_weather_data(city, unit= 'C'):
         response = requests.get(url)
         data = response.json()
 
+        if 'timezone' not in data:
+            return []
+
+        timezone= data['timezone']
+
+        # Get the hour
+        city_time= datetime.now(pytz.timezone(timezone)) # Get current local time of the city
+        current_hour= city_time.hour # Get current local time of the city\
+        
         # Extract hourly forecast data
         hourly_data = data['days'][0].get('hours', [])
-
-        # Get the current hour
-        current_time= datetime.now().strftime("%H:%M:%S")
-        current_hour= datetime.strptime(current_time, "%H:%M:%S").hour
 
         # Filter the data to start from the current hour
         hourly_data= [hour for hour in hourly_data if int(hour['datetime'].split(':')[0]) >= current_hour]
@@ -316,7 +321,7 @@ def fetch_weather_data(city, unit= 'C'):
                 icon_base64 = ""  # Default to empty if the file is not found
             
             weather_data.append({
-            "time": time,
+            "time": time,   
             "temperature": temperature,
             "humidity": humidity,
             "precipitation": precipitation,
