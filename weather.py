@@ -6,33 +6,8 @@ import numpy as np
 from meteostat import Point, Daily
 import pandas as pd
 import pytz
-import os
 from config import API_key
 from ui import convert_to_fahrenheit
-
-# Function to convert image file to base64 encoded string
-def encode_image_to_base64(file_path):
-    """Convert image file to base64-encoded string."""
-    try:
-        if os.path.exists(file_path):
-            with open(file_path, "rb") as img_file:
-                return base64.b64encode(img_file.read()).decode("utf-8")
-        else:
-            return None
-    except FileNotFoundError:
-        return None
-
-# Function to display weather icons using st.image
-def display_weather_icon(icon):
-    """Display the weather icon in Streamlit."""
-    if icon != 'N/A':
-        icon_path = f"Icon/{icon}.png"  # Ensure icons are placed in the "Icon" folder
-        if os.path.exists(icon_path):
-            st.image(icon_path, width=80)  # Display icon with a specific width
-        else:
-            st.warning("Icon not found.")
-    else:
-        st.warning("No Icon Available.")
 
 def current_weather(city, unit= 'C'):
     url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{city}?key={API_key}&unitGroup=metric"
@@ -63,6 +38,25 @@ def current_weather(city, unit= 'C'):
             
             if unit == 'F':
                 temperature= convert_to_fahrenheit(temperature)
+
+            def encode_image_to_base64(file_path):
+                try:
+                    with open(file_path, "rb") as img_file:
+                        return base64.b64encode(img_file.read()).decode("utf-8")
+                except FileNotFoundError:
+                    return None
+
+            # Generate dynamic image
+            if icon != 'N/A':
+                icon_url = f"Icon/{icon}.png"
+                base64_image = encode_image_to_base64(icon_url)
+                if base64_image:
+                    image_html = f'<img src="data:image/png;base64,{base64_image}" alt="Weather Icon" class="weather-icon1">'
+                else:
+                    image_html = '<p>No Icon Available</p>'
+            else:
+                image_html = '<p>No Icon Available</p>'
+
 
             # HTML for layout
             st.markdown(
@@ -144,7 +138,7 @@ def current_weather(city, unit= 'C'):
                 <div class="weather-container1">
                     <!-- Icon and Temperature Container -->
                     <div class="icon-temperature-container">
-                        {display_weather_icon(icon)}  <!-- Display the icon -->
+                        {image_html}
                         <p class="temperature">{temperature}°{unit}</p>
                     </div>
                     <!-- Details Container -->
